@@ -28,8 +28,6 @@ class UNet(nn.Module):
         self.conv3 = _UNetConv(128, 256)
         self.conv4 = _UNetConv(256, 512)
         self.conv5 = _UNetConv(512, 1024)
-
-
         self.conv6 = _UNetConv(1024, 512)
         self.conv7 = _UNetConv(512, 256)
         self.conv8 = _UNetConv(256, 128)
@@ -50,16 +48,9 @@ class UNet(nn.Module):
         x3 = self.conv3(self.maxpool(x2))
         x4 = self.conv4(self.maxpool(x3))
         x = self.conv5(self.maxpool(x4))
-
         x = self.conv6(torch.cat((self.deconv1(x), x4), dim=1))
         x = self.conv7(torch.cat((self.deconv2(x), x3), dim=1))
         x = self.conv8(torch.cat((self.deconv3(x), x2), dim=1))
         x = self.conv9(torch.cat((self.deconv4(x), x1), dim=1))
 
         return self.sigmoid(self.outconv(x))
-    
-
-if __name__ == '__main__':
-    model = UNet()
-    x = torch.randn(1, 3, 256, 256)
-    print(model(x).shape)
