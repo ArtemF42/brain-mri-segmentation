@@ -42,6 +42,7 @@ class UNet(nn.Module):
 
         self.outconv = nn.Conv2d(64, out_channels, 1)
         self.maxpool = nn.MaxPool2d(2)
+        self.sigmoid = nn.Sigmoid()
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x1 = self.conv1(x)
@@ -55,7 +56,7 @@ class UNet(nn.Module):
         x = self.conv8(torch.cat((self.deconv3(x), x2), dim=1))
         x = self.conv9(torch.cat((self.deconv4(x), x1), dim=1))
 
-        return self.outconv(x)
+        return self.sigmoid(self.outconv(x))
     
 
 if __name__ == '__main__':
